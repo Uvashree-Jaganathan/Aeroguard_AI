@@ -11,7 +11,6 @@ using namespace std::chrono_literals;
 class SafetyFusionNode : public rclcpp::Node {
 public:
     SafetyFusionNode() : Node("safety_fusion_node") {
-        // State variables
         vision_status_ = "SAFE";
         network_status_ = "SAFE";
         
@@ -23,7 +22,6 @@ public:
         stale_limit_ = 2.0;    // 2 seconds for STALE/WARNING
         startup_grace_period_ = 15.0; // Ignore timeouts for first 15 seconds
 
-        // Subscribers
         vision_sub_ = this->create_subscription<std_msgs::msg::String>(
             "drone/safety_status", 10, 
             std::bind(&SafetyFusionNode::vision_callback, this, std::placeholders::_1));
@@ -31,11 +29,9 @@ public:
         network_sub_ = this->create_subscription<std_msgs::msg::String>(
             "/network_safety_status", 10, 
             std::bind(&SafetyFusionNode::network_callback, this, std::placeholders::_1));
-
-        // Publisher for the final drone command
+        
         command_pub_ = this->create_publisher<std_msgs::msg::String>("/drone_final_command", 10);
 
-        // Timer to evaluate fusion logic at 5Hz (every 200ms)
         timer_ = this->create_wall_timer(
             200ms, std::bind(&SafetyFusionNode::fusion_logic_callback, this));
 
@@ -77,8 +73,7 @@ private:
                 current_network = "WARNING"; // Mark as warning if data is stale
             }
         }
-        // -----------------------
-
+        
         std::string final_command;
         std::string color = "\033[92m"; // Green
 
@@ -112,12 +107,10 @@ private:
         msg.data = final_command;
         command_pub_->publish(msg);
 
-        // Enhanced Logging
         RCLCPP_INFO(this->get_logger(), "%s[Vision: %s | Network: %s] -> DECISION: %s\033[0m", 
                     color.c_str(), current_vision.c_str(), current_network.c_str(), final_command.c_str());
     }
 
-    // Members
     rclcpp::Time start_time_;
     std::string vision_status_;
     std::string network_status_;
