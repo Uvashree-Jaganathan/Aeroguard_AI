@@ -6,11 +6,8 @@ import time
 class NetworkSimulatorNode(Node):
     def __init__(self):
         super().__init__('network_simulator_node')
-        
-        # Publisher to simulate the network monitor's output
         self.publisher_ = self.create_publisher(String, '/network_safety_status', 10)
-        
-        # Define a sequence of network states to simulate a "Train Journey"
+    
         # Format: (duration_seconds, status)
         self.scenario = [
             (10, "SAFE"),      # Starting: Everything is fine
@@ -23,7 +20,6 @@ class NetworkSimulatorNode(Node):
         self.current_step = 0
         self.step_start_time = time.time()
         
-        # Timer to publish status at 2Hz
         self.timer = self.create_timer(0.5, self.timer_callback)
         
         self.get_logger().info("Network Simulator started. Simulating 'Train Journey' scenario...")
@@ -32,7 +28,6 @@ class NetworkSimulatorNode(Node):
         now = time.time()
         duration, status = self.scenario[self.current_step]
         
-        # Publish the current simulated status
         msg = String()
         msg.data = status
         self.publisher_.publish(msg)
