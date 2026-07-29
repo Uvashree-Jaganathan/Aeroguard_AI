@@ -76,7 +76,6 @@ class VisionSafetyNode(Node):
                     cv2.putText(frame, status, (int(x1), int(y1) - 10), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
 
-            # Publish the most severe status found in this frame
             msg = String()
             msg.data = current_overall_status
             self.publisher_.publish(msg)
