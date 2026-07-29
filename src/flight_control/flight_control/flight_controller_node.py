@@ -9,7 +9,6 @@ class FlightControllerNode(Node):
         # Current state of the drone
         self.drone_state = "IDLE"
         
-        # Subscriber to the final safety command from the Fusion Node
         self.command_sub = self.create_subscription(
             String,
             '/drone_final_command',
