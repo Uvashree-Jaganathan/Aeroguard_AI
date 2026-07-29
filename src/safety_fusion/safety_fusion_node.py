@@ -7,16 +7,13 @@ class SafetyFusionNode(Node):
     def __init__(self):
         super().__init__('safety_fusion_node')
         
-        # State variables
         self.vision_status = "SAFE"
         self.network_status = "SAFE"
         
-        # Heartbeat timestamps
         self.last_vision_time = time.time()
         self.last_network_time = time.time()
         self.timeout_limit = 10.0  # Increased to 10 seconds to prevent false CRITICAL triggers from YOLO lag
         
-        # Subscribers
         self.vision_sub = self.create_subscription(
             String, 
             'vision_safety_status', 
@@ -28,11 +25,9 @@ class SafetyFusionNode(Node):
             '/network_safety_status', 
             self.network_callback, 
             10)
-        
-        # Publisher for the final drone command
+    
         self.command_pub = self.create_publisher(String, '/drone_final_command', 10)
         
-        # Timer to evaluate fusion logic at 5Hz
         self.timer = self.create_timer(0.2, self.fusion_logic_callback)
         
         self.get_logger().info("Safety Fusion Node started with Heartbeat Monitoring...")
@@ -58,7 +53,6 @@ class SafetyFusionNode(Node):
         current_network = self.network_status
         if (now - self.last_network_time) > self.timeout_limit:
             current_network = "CRITICAL" # Connection loss is critical
-        # -----------------------
 
         final_command = "NORMAL OPERATION"
         severity_color = "\033[92m" # Green
@@ -92,7 +86,6 @@ class SafetyFusionNode(Node):
         msg.data = final_command
         self.command_pub.publish(msg)
         
-        # ENHANCED LOGGING: Show exactly what the brain is seeing
         log_msg = f"{severity_color}[Vision: {current_vision} | Network: {current_network}] -> DECISION: {final_command}\033[0m"
         self.get_logger().info(log_msg)
 
