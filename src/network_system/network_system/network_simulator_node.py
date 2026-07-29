@@ -16,7 +16,7 @@ class NetworkSimulatorNode(Node):
             (10, "WARNING"),   # Exiting tunnel: Signal returning
             (10, "SAFE"),      # Back in open area: Stable again
         ]
-        
+    
         self.current_step = 0
         self.step_start_time = time.time()
         
