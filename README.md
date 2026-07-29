@@ -1,12 +1,12 @@
-# �️ AeroGuard AI: Autonomous Drone Safety System
+#  AeroGuard AI: Autonomous Drone Safety System
 
 AeroGuard AI is a sophisticated ROS 2-based safety layer designed to protect autonomous drones by fusing real-time computer vision and network telemetry. The system monitors for physical obstacles and communication instability, automatically overriding flight commands to ensure drone safety.
 
-## 🚀 Core Functionality
+##  Core Functionality
 
 The system operates as a safety "brain" that continuously evaluates the environment and connection quality to make critical flight decisions:
 
-### 👁️ Vision Safety (YOLOv8)
+###  Vision Safety (YOLOv8)
 - **Real-time Detection:** Uses a YOLOv8 model to detect objects via a webcam.
 - **Danger Zone Monitoring:** Implements a Region of Interest (ROI) in the center of the frame.
 - **Dynamic Severity:** 
@@ -14,12 +14,12 @@ The system operates as a safety "brain" that continuously evaluates the environm
   - `WARNING`: Medium objects or objects entering the ROI.
   - `SAFE`: No immediate threats.
 
-### 🌐 Network Intelligence (LSTM)
+### Network Intelligence (LSTM)
 - **Telemetry Tracking:** Monitors RSSI (Signal Level), Latency, and Packet Loss.
 - **Predictive Analysis:** Uses a trained LSTM (Long Short-Term Memory) neural network to predict network instability before it leads to a total disconnect.
 - **Status Output:** Publishes `SAFE`, `WARNING`, or `CRITICAL` based on ML predictions.
 
-### 🧠 Safety Fusion Logic
+### Safety Fusion Logic
 The Fusion Node acts as the final decision-maker, prioritizing safety based on the following hierarchy:
 1. **Vision Critical** $\rightarrow$ 🚨 **EMERGENCY HOVER** (Immediate obstacle threat or blindness).
 2. **Network Critical** $\rightarrow$ 🏠 **AUTO-RETURN TO HOME** (Loss of command link).
@@ -27,12 +27,12 @@ The Fusion Node acts as the final decision-maker, prioritizing safety based on t
 4. **General Warning** $\rightarrow$ ⚠️ **REDUCED SPEED** (Minor instability or distant obstacles).
 5. **All Clear** $\rightarrow$ ✅ **NORMAL OPERATION**.
 
-### 🎮 Flight Control Execution
+###  Flight Control Execution
 The Flight Controller simulates the drone's physical response to the fusion commands, transitioning between states like `EMERGENCY_HOVER`, `RTH`, `CAUTIOUS_FLIGHT`, and `MISSION_FLIGHT`.
 
 ---
 
-## 🛠️ System Architecture
+##  System Architecture
 
 ### High-Level Topic Flow
 `Vision Node` $\rightarrow$ `/vision_safety_status` $\searrow$
@@ -46,7 +46,7 @@ $\quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \
 * **`flight_control`**: Actuator simulation and state management.
 * **`dashboard.py`**: Streamlit UI for live monitoring of probabilities and safety states.
 
-## 📦 Dependencies
+## Dependencies
 
 This project requires:
 * **ROS 2 Jazzy**
@@ -135,7 +135,7 @@ This creates:
 
 Press `Ctrl + C` in each terminal to stop the running nodes and dashboard.
 
-## 📌 Notes
+##  Notes
 
 * The vision node requires a connected webcam.
 * `network_monitor_node.py` reads `network_model.h5` and `lstm_scaler.joblib` from the project root.
