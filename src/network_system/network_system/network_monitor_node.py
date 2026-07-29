@@ -16,22 +16,17 @@ class NetworkMonitorNode(Node):
         
         # Configuration
         self.target_ip = "8.8.8.8"  # Change this to your drone's ground station IP
-        self.publish_frequency = 1.0  # Publish every 1 second
+        self.publish_frequency = 1.0  
         self.window_size = 10  # Must match the window size used in prepare_lstm_data.py
         
-        # Buffer to store the last N readings for LSTM sequence
         self.data_buffer = deque(maxlen=self.window_size)
         
-        # Publisher: /network_status
         # Array format: [rssi, latency, packet_loss]
         self.publisher_ = self.create_publisher(Float64MultiArray, '/network_status', 10)
         
-        # Publisher: /network_safety_status
         # Publishes: "SAFE", "WARNING", "CRITICAL"
         self.status_publisher_ = self.create_publisher(String, '/network_safety_status', 10)
 
-        # Publisher: /network_probs
-        # Publishes JSON string of probabilities: {"SAFE": 0.8, "WARNING": 0.1, "CRITICAL": 0.1}
         self.probs_publisher_ = self.create_publisher(String, '/network_probs', 10)
 
         # Load the trained ML model and Scaler
@@ -57,7 +52,6 @@ class NetworkMonitorNode(Node):
         self.get_logger().info(f'Network Monitor Node started. Monitoring target: {self.target_ip}')
 
     def get_rssi(self):
-        # ...existing code...
         for _ in range(3):  # Try up to 3 times to get a valid reading
             try:
                 output = subprocess.check_output(['iwconfig'], stderr=subprocess.STDOUT).decode('utf-8')
@@ -69,17 +63,13 @@ class NetworkMonitorNode(Node):
         return -100.0
 
     def get_ping_metrics(self):
-        # ...existing code...
         try:
-            # Send 3 pings, wait max 1 second
             cmd = ['ping', '-c', '3', '-W', '1', self.target_ip]
             output = subprocess.check_output(cmd).decode('utf-8')
             
-            # Extract Packet Loss: Look specifically for the percentage sign
             loss_match = re.search(r'(\d+)%\s+packet loss', output)
             packet_loss = float(loss_match.group(1)) if loss_match else 100.0
             
-            # Extract Average Latency
             latency_match = re.search(r'rtt min/avg/max/mdev = [\d.]+/([\d.]+)', output)
             latency = float(latency_match.group(1)) if latency_match else 999.0
             
@@ -101,7 +91,6 @@ class NetworkMonitorNode(Node):
         self.publisher_.publish(msg)
         
         # 4. Update Buffer for LSTM
-        # We store the raw values and scale them just before prediction
         self.data_buffer.append([rssi, latency, loss])
         
         # 5. Predict Safety Status using LSTM Model
@@ -150,7 +139,6 @@ class NetworkMonitorNode(Node):
         )
 
 def main(args=None):
-    # ...existing code...
     rclpy.init(args=args)
     node = NetworkMonitorNode()
     try:
