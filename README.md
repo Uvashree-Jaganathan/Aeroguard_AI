@@ -30,7 +30,7 @@ The Fusion Node acts as the final decision-maker, prioritizing safety based on t
 ###  Flight Control Execution
 The Flight Controller simulates the drone's physical response to the fusion commands, transitioning between states like `EMERGENCY_HOVER`, `RTH`, `CAUTIOUS_FLIGHT`, and `MISSION_FLIGHT`.
 
----
+
 
 ##  System Architecture
 
@@ -72,7 +72,7 @@ colcon build
 source install/setup.bash
 ```
 
-## 🏃 Running the System
+##  Running the System
 
 ### Launch All Nodes
 ```bash
@@ -141,4 +141,4 @@ Press `Ctrl + C` in each terminal to stop the running nodes and dashboard.
 * `network_monitor_node.py` reads `network_model.h5` and `lstm_scaler.joblib` from the project root.
 * The dashboard expects ROS2 topics to be available and requires `streamlit`.
 * Use `ros2 topic list` and `ros2 node list` to verify ROS2 connectivity if nodes are not publishing.
-# Aeroguard_AI
+
