@@ -13,13 +13,11 @@ class NetworkLoggerNode(Node):
         self.filename = 'network_dataset.csv'
         self.current_label = 0  # Default: Stable
         
-        # Create the file and write the header if it doesn't exist
         if not os.path.exists(self.filename):
             with open(self.filename, mode='w', newline='') as f:
                 writer = csv.writer(f)
                 writer.writerow(['timestamp', 'rssi', 'latency', 'packet_loss', 'label'])
-        
-        # Subscriber for network metrics
+    
         self.subscription = self.create_subscription(
             Float64MultiArray, 
             '/network_status', 
@@ -27,8 +25,6 @@ class NetworkLoggerNode(Node):
             10
         )
 
-        # Subscriber to change the label dynamically
-        # Send an Int32 to this topic to change the label (0=Stable, 1=Degrading, 2=Failure)
         self.label_subscription = self.create_subscription(
             Int32,
             '/set_network_label',
@@ -50,11 +46,9 @@ class NetworkLoggerNode(Node):
             latency = msg.data[1]
             loss = msg.data[2]
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            
-            # Use the dynamically updated label
+        
             label = self.current_label
             
-            # Append to CSV
             with open(self.filename, mode='a', newline='') as f:
                 writer = csv.writer(f)
                 writer.writerow([timestamp, rssi, latency, loss, label])
